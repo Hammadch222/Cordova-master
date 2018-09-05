@@ -1,0 +1,63 @@
+<?xml version='1.0' encoding='utf-8'?>
+<plugin id="cordova-plugin-webengage" version="1.0.0" xmlns="http://apache.org/cordova/ns/plugins/1.0" xmlns:android="http://schemas.android.com/apk/res/android">
+	<name>WebEngagePlugin</name>
+
+    <!-- Removed for deprecating cocoapods support -->
+	<!--<dependency id="cordova-plugin-cocoapod-support"/>-->
+
+	<js-module name="WebEngagePlugin" src="www/WebEngagePlugin.js">
+		<clobbers target="webengage" />
+	</js-module>
+
+	<platform name="ios">
+        <!-- Removed for deprecating cocoapods support -->
+		<!--<pod id="WebEngage" />-->
+
+		<config-file parent="/*" target="config.xml">
+			<feature name="WebEngagePlugin">
+				<param name="ios-package" value="WebEngagePlugin" />
+                <param name="onload" value="true"/>
+			</feature>
+		</config-file>
+
+		<config-file parent="UIBackgroundModes" target="*Info.plist">
+			<array>
+				<string>fetch</string>
+				<string>remote-notification</string>
+			</array>
+		</config-file>
+
+		<header-file src="src/ios/WebEngagePlugin.h" />
+		<source-file src="src/ios/WebEngagePlugin.m" />
+		<header-file src="src/ios/AppDelegate+WebEngagePlugin.h" />
+		<source-file src="src/ios/AppDelegate+WebEngagePlugin.m" />
+	</platform>
+    
+    <platform name="android">
+        <config-file target="config.xml" parent="/*">
+            <feature name="WebEngagePlugin">
+                <param name="android-package" value="com.webengage.cordova.WebEngagePlugin" />
+            </feature>
+        </config-file>
+        <config-file target="AndroidManifest.xml" parent="/manifest">
+            <uses-permission android:name="android.permission.INTERNET"/>
+            <uses-permission android:name="android.permission.WAKE_LOCK" />
+        </config-file>
+        
+        <config-file target="AndroidManifest.xml" parent="/manifest/application">
+            <receiver
+                android:name="com.webengage.sdk.android.InstallTracker"
+                android:exported="true">
+                <intent-filter>
+                    <action android:name="com.android.vending.INSTALL_REFERRER" />
+                </intent-filter>
+            </receiver>
+        </config-file>
+
+        <source-file src="src/android/WebEngagePlugin.java" target-dir="src/com/webengage/cordova/"/>
+        <framework src="src/android/WebEngagePlugin.gradle" custom="true" type="gradleReference"/>
+    </platform>
+
+    <hook src="hooks/migrate.js" type="after_plugin_add" />
+    <hook src="hooks/clean.js" type="before_clean" />
+</plugin>
